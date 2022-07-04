@@ -17,25 +17,31 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
 
-      - name: Setup latest Python
-        uses: actions/setup-python@v2.2.2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
         with:
-          python-version: 3.10
-          architecture: x64
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Pre-commit
-        uses: pre-commit/action@v2.0.3
+      - name: Build and run dev container task
+        uses: devcontainers/ci@v0.2
+        with:
+          imageName: ghcr.io/dontshavetheyak/terraform-template-module-devcontainer
+          runCmd: pre-commit run -a
 
   test:
     needs: pre_commit
     runs-on: ubuntu-latest
-    name: Test Latest
+    name: Terraform Latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2.3.4
 
       - name: Setup latest Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -48,11 +54,10 @@ jobs:
 
   multi:
     needs: test
-    needs: pre_commit
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        terraform-version: ['0.11.15', '0.12.31', '0.13.7', '0.14.11', '0.15.5']
+        terraform-version: ['0.12.31', '0.13.7', '0.14.11', '0.15.5']
     name: Terraform ${{ matrix.terraform-version }}
     steps:
       - name: Checkout Code
@@ -62,6 +67,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform-version }}
+          terraform_wrapper: false
 
       - name: Set up Go
         uses: actions/setup-go@v2

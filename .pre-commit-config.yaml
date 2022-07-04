@@ -1,0 +1,25 @@
+repos:
+- repo: https://github.com/antonbabenko/pre-commit-terraform
+  rev: v1.73.0 # Get the latest from: https://github.com/antonbabenko/pre-commit-terraform/releases
+  hooks:
+    - id: terraform_fmt
+    - id: terraform_validate
+    - id: terraform_checkov
+    - id: terraform_tflint
+    - id: terraform_tfsec
+
+- repo: local
+  hooks:
+    - id: terraform-docs-modules
+      name: terraform-docs-modules
+      entry: terraform-docs .
+      language: system
+      pass_filenames: false
+      always_run: true
+
+    - id: terraform-docs-examples
+      name: terraform-docs-examples
+      entry: "terraform-docs examples"
+      language: system
+      pass_filenames: false
+      always_run: true
