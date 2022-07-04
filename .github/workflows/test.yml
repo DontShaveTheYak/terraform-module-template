@@ -27,7 +27,7 @@ jobs:
       - name: Build and run dev container task
         uses: devcontainers/ci@v0.2
         with:
-          imageName: ghcr.io/DontShaveTheYak/terraform-template-module-devcontainer
+          imageName: ghcr.io/dontshavetheyak/terraform-template-module-devcontainer
           runCmd: pre-commit run -a
 
   test:
