@@ -40,6 +40,8 @@ jobs:
 
       - name: Setup latest Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false
 
       - name: Set up Go
         uses: actions/setup-go@v2
@@ -65,6 +67,7 @@ jobs:
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: ${{ matrix.terraform-version }}
+          terraform_wrapper: false
 
       - name: Set up Go
         uses: actions/setup-go@v2
