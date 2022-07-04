@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        terraform-version: ['0.11.15', '0.12.31', '0.13.7', '0.14.11', '0.15.5']
+        terraform-version: ['0.12.31', '0.13.7', '0.14.11', '0.15.5']
     name: Terraform ${{ matrix.terraform-version }}
     steps:
       - name: Checkout Code
