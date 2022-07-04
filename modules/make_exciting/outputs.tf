@@ -1,4 +1,4 @@
 output "result" {
-  description = "A very exciting string."
+  description = "A very excited string."
   value       = "${var.text}!"
 }

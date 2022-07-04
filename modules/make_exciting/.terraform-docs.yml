@@ -1,0 +1,6 @@
+formatter: "markdown"
+
+sections:
+  show:
+    - inputs
+    - outputs
