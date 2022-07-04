@@ -1,0 +1,20 @@
+name: Release
+
+on:
+  pull_request:
+    types: closed
+
+jobs:
+  release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged && github.base_ref == 'master'
+    steps:
+      - name: Create Release
+        uses: release-drafter/release-drafter@v5.15.0
+        if: github.base_ref == 'master'
+        with:
+          publish: true
+          commitish: master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
