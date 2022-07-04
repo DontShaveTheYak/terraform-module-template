@@ -8,13 +8,13 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged && github.base_ref == 'master'
+    if: github.event.pull_request.merged && github.base_ref == 'main'
     steps:
       - name: Create Release
         uses: release-drafter/release-drafter@v5.15.0
-        if: github.base_ref == 'master'
+        if: github.base_ref == 'main'
         with:
           publish: true
-          commitish: master
+          commitish: main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
