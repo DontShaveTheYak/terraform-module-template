@@ -17,55 +17,51 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
-# RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-
 # Install tools.
-RUN apt-get update && apt-get -y install --no-install-recommends \
-    ca-certificates curl wget git openssh-client  locales && \
-    locale-gen en_US.UTF-8
+RUN apt update && apt -y install --no-install-recommends \
+    ca-certificates curl wget git openssh-client locales build-essential \
+    python3 python3-pip unzip \
+    && locale-gen en_US.UTF-8
 
 ENV DEBIAN_FRONTEND=dialog
+
+# Install GO
+RUN wget https://go.dev/dl/go1.18.3.linux-amd64.tar.gz \
+    && rm -rf /usr/local/go \
+    && tar -C /usr/local -xzf go1.18.3.linux-amd64.tar.gz \
+    && rm -rf go1.18.3.linux-amd64.tar.gz
+
+ENV PATH /usr/local/go/bin:$PATH
 
 USER $USERNAME
 ENV HOME /home/$USERNAME
 WORKDIR $HOME
 
-# SHELL ["/bin/bash","--login", "-c"]
+# vscode go extension dependencies
+RUN go install golang.org/x/tools/gopls@latest \
+    && go install github.com/go-delve/delve/cmd/dlv@latest \
+    && go install honnef.co/go/tools/cmd/staticcheck@latest
 
-# ENV HOME /home/$USERNAME
+# Install pre-commit go dependencies
+RUN go install github.com/terraform-docs/terraform-docs@v0.16.0 \
+    && go install github.com/aquasecurity/tfsec/cmd/tfsec@latest
+# ENV PATH $HOME/go/bin:$PATH
 
+# Install pre-commit and it's pip dependencies
+RUN pip install pre-commit checkov
+# ENV PATH $HOME/.local/bin:$PATH
+
+# Install tfswitch
 RUN wget https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh \
     && bash install.sh -b $HOME/bin
 
-ENV PATH $HOME/bin:$PATH
+# Install pre-commit dependency terrascan
+RUN curl -L "$(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz \
+    && tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz \
+    && install terrascan $HOME/bin && rm terrascan
 
+# Install pre-commit dependency tflint
+RUN curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh -O \
+    && TFLINT_INSTALL_PATH=$HOME/bin bash install_linux.sh && rm install_linux.sh
 
-# Install pyenv to manage multiple python installations
-# RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash && \
-#     echo 'export PATH="$HOME/.pyenv/bin:$PATH"' >> ~/.bashrc && \
-#     echo 'eval "$(pyenv init --path)"' >> ~/.bashrc && \
-#     echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
-
-# # Not sure this is needed
-SHELL ["/bin/bash","--login", "-c"]
-
-# # Stuff needed to make pyenv work correctly since the login shell
-# # above doesnt seem to run bachrc
-# ENV PYENV_ROOT="/home/vscode/.pyenv"
-# ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-
-
-# # Install the required python versions (this takes a bit usually) so we do lots of cacheing
-# RUN --mount=type=cache,target=/home/vscode/.pyenv/cache,uid=1000 \
-#     pyenv install -s 3.7.13 && \
-#     pyenv install -s 3.8.13 && \
-#     pyenv install -s 3.9.12 && \
-#     pyenv install -s 3.10.4 && \
-#     pyenv global 3.9.12 && \
-#     pyenv rehash
-
-# # Install poetry to manage our python project
-# RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# # Install nox and pre-commit to automate CI stuff
-# RUN pip install --user --upgrade nox nox_poetry pre-commit
+ENV PATH $HOME/.local/bin:$HOME/go/bin:$HOME/bin:$PATH
