@@ -1,0 +1,15 @@
+formatter: "markdown"
+
+output:
+  file: README.md
+  mode: inject
+
+recursive:
+  enabled: true
+  path: ./
+
+sections:
+  show:
+    - modules
+    - inputs
+    - outputs

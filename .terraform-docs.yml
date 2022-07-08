@@ -1,0 +1,8 @@
+formatter: "markdown"
+
+output:
+  file: README.md
+  mode: inject
+
+recursive:
+  enabled: true
