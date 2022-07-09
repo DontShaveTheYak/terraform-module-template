@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHelloWorldExample(t *testing.T) {
+func TestHelloWorld(t *testing.T) {
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../examples/hello_world",
@@ -23,7 +23,7 @@ func TestHelloWorldExample(t *testing.T) {
 	assert.Equal(t, "Hello, World!", output)
 }
 
-func TestCustomInput(t *testing.T) {
+func TestHelloCustom(t *testing.T) {
 
 	var name string = "DontShaveTheYak"
 
