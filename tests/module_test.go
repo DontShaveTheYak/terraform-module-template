@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHelloWorldExample(t *testing.T) {
+func TestHelloWorld(t *testing.T) {
 
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../examples/hello_world",
@@ -23,7 +23,7 @@ func TestHelloWorldExample(t *testing.T) {
 	assert.Equal(t, "Hello, World!", output)
 }
 
-func TestCustomInput(t *testing.T) {
+func TestHelloCustom(t *testing.T) {
 
 	var name string = "DontShaveTheYak"
 
@@ -41,6 +41,28 @@ func TestCustomInput(t *testing.T) {
 	output := terraform.Output(t, terraformOptions, "result")
 
 	expectedOutput := fmt.Sprintf("Hello, %s!", name)
+
+	assert.Equal(t, expectedOutput, output)
+}
+
+func TestHelloMultiple(t *testing.T) {
+
+	var names = []interface{}{"DSTY", "TFWeekly", "TerraTest"}
+
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../examples/hello_multiple",
+		Vars: map[string]interface{}{
+			"friends": names,
+		},
+	})
+
+	defer terraform.Destroy(t, terraformOptions)
+
+	terraform.InitAndApply(t, terraformOptions)
+
+	output := terraform.Output(t, terraformOptions, "result")
+
+	expectedOutput := fmt.Sprintf("Hello, %s, %s and %s!", names...)
 
 	assert.Equal(t, expectedOutput, output)
 }
