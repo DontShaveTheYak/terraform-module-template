@@ -15,7 +15,7 @@ jobs:
     name: Pre-commit
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
@@ -36,7 +36,7 @@ jobs:
     name: Terraform Latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
 
       - name: Setup latest Terraform
         uses: hashicorp/setup-terraform@v2
@@ -61,7 +61,7 @@ jobs:
     name: Terraform ${{ matrix.terraform-version }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3.1.0
+        uses: actions/checkout@v3.3.0
 
       - name: Setup Terraform ${{ matrix.terraform-version }}
         uses: hashicorp/setup-terraform@v2
