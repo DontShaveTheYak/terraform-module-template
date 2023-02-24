@@ -25,7 +25,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and run dev container task
-        uses: devcontainers/ci@v0.2
+        uses: devcontainers/ci@v0.3
         with:
           imageName: ghcr.io/dontshavetheyak/terraform-template-module-devcontainer
           runCmd: pre-commit run -a
