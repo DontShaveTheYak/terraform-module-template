@@ -9,6 +9,8 @@ on:
       - '.github/workflows/release.yml'
       - '.github/workflows/pr_checks.yml'
 
+permissions: read-all
+
 jobs:
   pre_commit:
     runs-on: ubuntu-latest
