@@ -4,11 +4,16 @@ on:
   pull_request:
     types: closed
 
+permissions: read-all
+
 jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged && github.base_ref == 'main'
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Create Release
         uses: release-drafter/release-drafter@v5.15.0
