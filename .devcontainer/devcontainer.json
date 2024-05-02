@@ -6,34 +6,37 @@
 		"dockerfile": "Dockerfile"
 	},
 	// Set *default* container specific settings.json values on container create.
-	"settings": {
-		"terminal.integrated.profiles.linux": {
-			"bash": {
-				"path": "/usr/bin/bash",
-				"icon": "terminal-bash"
-			}
-		},
-		"terminal.integrated.defaultProfile.linux": "bash",
-		"terraform.codelens.referenceCount": true,
-		"terraform-ls.experimentalFeatures": {
-			"prefillRequiredFields": true,
-			"validateOnSave": true
-		},
-		"[terraform]": {
-			"editor.formatOnSave": true
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/usr/bin/bash",
+						"icon": "terminal-bash"
+					}
+				},
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"terraform.codelens.referenceCount": true,
+				"terraform-ls.experimentalFeatures": {
+					"prefillRequiredFields": true,
+					"validateOnSave": true
+				},
+				"[terraform]": {
+					"editor.formatOnSave": true
+				}
+			},
+			"extensions": [
+				"eamodio.gitlens",
+				"hashicorp.terraform",
+				"golang.go"
+			]
 		}
 	},
-	// Add the IDs of extensions you wantinstalled when the container is created.
-	"extensions": [
-		"eamodio.gitlens",
-		"hashicorp.terraform",
-		"golang.go"
-	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "cd tests && go mod init ${localWorkspaceFolderBasename} || true",
 	"postStartCommand": "pre-commit install && tflint --init && tfswitch && cd tests && go mod tidy",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	"remoteUser": "ubuntu"
 }

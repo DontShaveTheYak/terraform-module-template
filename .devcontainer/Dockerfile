@@ -1,18 +1,15 @@
 FROM ubuntu:24.04
 
-ARG USERNAME=vscode
+ARG USERNAME=ubuntu
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 # Ensure apt is in non-interactive to avoid prompts
 ENV DEBIAN_FRONTEND=noninteractive
+ENV PIP_BREAK_SYSTEM_PACKAGES 1
 
 # Create the user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    #
-    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-    && apt-get update \
+RUN apt-get update \
     && apt-get install -y sudo \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
@@ -22,8 +19,6 @@ RUN apt update && apt -y install --no-install-recommends \
     ca-certificates curl wget git openssh-client locales build-essential \
     python3 python3-pip unzip \
     && locale-gen en_US.UTF-8
-
-ENV DEBIAN_FRONTEND=dialog
 
 # Install GO
 RUN wget https://go.dev/dl/go1.22.2.linux-amd64.tar.gz \
