@@ -16,7 +16,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Create Release
-        uses: release-drafter/release-drafter@v6.0.0
+        uses: release-drafter/release-drafter@v6.1.0
         if: github.base_ref == 'main'
         with:
           publish: true
