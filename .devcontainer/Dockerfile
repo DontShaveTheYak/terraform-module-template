@@ -17,7 +17,7 @@ RUN apt-get update \
 # Install tools.
 RUN apt update && apt -y install --no-install-recommends \
     ca-certificates curl wget git openssh-client locales build-essential \
-    python3 python3-pip unzip \
+    python3 python3-pip unzip jq \
     && locale-gen en_US.UTF-8
 
 # Install GO
@@ -46,17 +46,18 @@ RUN go install github.com/terraform-docs/terraform-docs@v0.16.0 \
 RUN pip install pre-commit checkov
 # ENV PATH $HOME/.local/bin:$PATH
 
-# Install tfswitch
-RUN wget https://raw.githubusercontent.com/warrensbox/terraform-switcher/release/install.sh \
-    && bash install.sh -b $HOME/bin
+# Install tenv
+RUN LATEST_VERSION=$(curl --silent https://api.github.com/repos/tofuutils/tenv/releases/latest | jq -r .tag_name) \
+    && curl -O -L "https://github.com/tofuutils/tenv/releases/latest/download/tenv_${LATEST_VERSION}_amd64.deb" \
+    && sudo dpkg -i "tenv_${LATEST_VERSION}_amd64.deb"
 
 # Install pre-commit dependency terrascan
 RUN curl -L "$(curl -s https://api.github.com/repos/tenable/terrascan/releases/latest | grep -o -E "https://.+?_Linux_x86_64.tar.gz")" > terrascan.tar.gz \
     && tar -xf terrascan.tar.gz terrascan && rm terrascan.tar.gz \
-    && install terrascan $HOME/bin && rm terrascan
+    && install -D terrascan $HOME/bin && rm terrascan
 
 # Install pre-commit dependency tflint
 RUN curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh -O \
-    && TFLINT_INSTALL_PATH=$HOME/bin bash install_linux.sh && rm install_linux.sh
+    && bash install_linux.sh && rm install_linux.sh
 
-ENV PATH $HOME/.local/bin:$HOME/go/bin:$HOME/bin:$PATH
+ENV PATH /usr/bin:$HOME/.local/bin:$HOME/go/bin:$HOME/bin:$PATH
