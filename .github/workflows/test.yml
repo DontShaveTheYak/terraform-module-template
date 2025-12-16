@@ -50,7 +50,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Set up Go
-        uses: actions/setup-go@v5.5.0
+        uses: actions/setup-go@v5.6.0
         with:
           go-version-file: tests/go.mod
           cache-dependency-path: tests/go.sum
@@ -77,7 +77,7 @@ jobs:
           terraform_wrapper: false
 
       - name: Set up Go
-        uses: actions/setup-go@v5.5.0
+        uses: actions/setup-go@v5.6.0
         with:
           go-version-file: tests/go.mod
           cache-dependency-path: tests/go.sum
