@@ -36,7 +36,7 @@
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "cd tests && go mod init ${localWorkspaceFolderBasename} || true",
-	"postStartCommand": "pre-commit install && tflint --init && tfswitch && cd tests && go mod tidy",
+	"postStartCommand": "pre-commit install && tflint --init && tenv tf install latest-allowed && cd tests && go mod tidy",
 	// Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "ubuntu"
 }
